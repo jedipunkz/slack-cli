@@ -16,56 +16,52 @@ limitations under the License.
 package cmd
 
 import (
-  "fmt"
-  "os"
-  "github.com/spf13/cobra"
+	"fmt"
+	"github.com/spf13/cobra"
+	"os"
 
-  homedir "github.com/mitchellh/go-homedir"
-  "github.com/spf13/viper"
-
+	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/viper"
 )
-
 
 var cfgFile string
 
-
 var rootCmd = &cobra.Command{
-  Use:   "slack-cli",
-  Short: "Command line tool for Slack",
-  Long: `Slack-cli is a command line tool which send a message to slack, get info from slack.`,
+	Use:   "slack-cli",
+	Short: "Command line tool for Slack",
+	Long:  `Slack-cli is a command line tool which send a message to slack, get info from slack.`,
 }
 
 func Execute() {
-  if err := rootCmd.Execute(); err != nil {
-    fmt.Println(err)
-    os.Exit(1)
-  }
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func init() {
-  cobra.OnInitialize(initConfig)
-  rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.slack-cli.yaml)")
-  rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.slack-cli.yaml)")
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func initConfig() {
-  if cfgFile != "" {
-    viper.SetConfigFile(cfgFile)
-  } else {
-    home, err := homedir.Dir()
-    if err != nil {
-      fmt.Println(err)
-      os.Exit(1)
-    }
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		home, err := homedir.Dir()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
-    viper.AddConfigPath(home)
-    viper.SetConfigName(".slack-cli")
-  }
+		viper.AddConfigPath(home)
+		viper.SetConfigName(".slack-cli")
+	}
 
-  viper.AutomaticEnv() // read in environment variables that match
+	viper.AutomaticEnv() // read in environment variables that match
 
-  if err := viper.ReadInConfig(); err == nil {
-    fmt.Println("Using config file:", viper.ConfigFileUsed())
-  }
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
 }
-

@@ -19,7 +19,7 @@ import (
 	"errors"
 	"log"
 
-    "github.com/nlopes/slack"
+	"github.com/nlopes/slack"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

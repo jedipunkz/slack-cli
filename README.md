@@ -25,3 +25,15 @@ slack-cli msg <チャンネル名> 'メッセージをここに書く'
 slack-cli exec <チャンネル名> 'コマンド名'
 ex) slack-cli exec botchannel 'uname -a'
 ```
+
+### ユーザ ID に従って情報を表示
+
+```bash
+slack-cli user <USER_ID>
+```
+
+### デーモンで起動し Slack の特定の文字列に反応する
+
+```bash
+slack-cli listen
+```

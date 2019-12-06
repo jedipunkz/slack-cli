@@ -1,5 +1,7 @@
 # Slack-Cli
 
+[![Build Status](https://travis-ci.org/jedipunkz/slack-cli.svg?branch=master)](https://travis-ci.org/jedipunkz/slack-cli)
+
 ## Description
 
 Golang 勉強用のレポジトリです。Slack にメッセージを送る CLI を Golang で作りました。

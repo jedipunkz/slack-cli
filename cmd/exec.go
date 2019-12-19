@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"os/exec"
 
 	"github.com/nlopes/slack"
@@ -34,46 +34,38 @@ and usage of using your command. For example:
 
 slack-cli exec bot 'ls /tmp'`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 2 {
-			log.Println("%s", len(args))
-			return errors.New("Required least 2 arguments.")
+		if len(args) != 1 {
+			return errors.New("Required only 1 argument.")
 		}
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		channel := args[0]
-		command := args[1]
-
-		out, err := exec.Command("sh", "-c", command[:]).Output()
-		if err != nil {
-			log.Println("Fatal error: %s", err)
-		}
-
-		token := viper.GetString("token")
-		api := slack.New(token)
-
-		_, _, errslack := api.PostMessage(
-			channel, slack.MsgOptionText(
-				"command: "+command+"\n"+"```"+string(out)+"```", false))
-		if errslack != nil {
-			log.Println("Fatal error: %s", errslack)
-			return
-		}
-
-		log.Println("Message successfully sent to channel.")
+		execCommand(channel, args[0])
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(execCmd)
+	execCmd.Flags().StringVarP(&channel, "channel", "c", "", "channel name")
+}
 
-	// Here you will define your flags and configuration settings.
+func execCommand(channel string, command string) {
+	out, err := exec.Command("sh", "-c", command[:]).Output()
+	if err != nil {
+		fmt.Printf("Fatal error: %s", err)
+		return
+	}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// execCmd.PersistentFlags().String("foo", "", "A help for foo")
+	token := viper.GetString("token")
+	api := slack.New(token)
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// execCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	_, _, errslack := api.PostMessage(
+		channel, slack.MsgOptionText(
+			"command: "+command+"\n"+"```"+string(out)+"```", false))
+	if errslack != nil {
+		fmt.Printf("Fatal error: %s", errslack)
+		return
+	}
+
+	fmt.Println("Message successfully sent to channel.")
 }

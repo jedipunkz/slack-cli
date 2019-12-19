@@ -37,7 +37,6 @@ slack-cli msg bot 'hello world'
 This example mean that sending 'hello world' message to #bot channel on slack.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			fmt.Printf("%s", len(args))
 			return errors.New("Require least 2 arguments.")
 		}
 		return nil

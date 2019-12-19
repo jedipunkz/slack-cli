@@ -17,12 +17,14 @@ package cmd
 
 import (
 	"errors"
-	"log"
+	"fmt"
 
 	"github.com/nlopes/slack"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+var channel string
 
 var msgCmd = &cobra.Command{
 	Use:   "msg",
@@ -34,27 +36,31 @@ slack-cli msg bot 'hello world'
 
 This example mean that sending 'hello world' message to #bot channel on slack.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 2 {
-			log.Println("%s", len(args))
+		if len(args) != 1 {
+			fmt.Printf("%s", len(args))
 			return errors.New("Require least 2 arguments.")
 		}
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		token := viper.GetString("token")
-		channel := args[0]
-
-		api := slack.New(token)
-
-		_, _, err := api.PostMessage(channel, slack.MsgOptionText(args[1], false))
-		if err != nil {
-			log.Println("%s\n", err)
-			return
-		}
-		log.Println("Message successfully sent to channel.")
+		sendMassage(channel, args[0])
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(msgCmd)
+	msgCmd.Flags().StringVarP(&channel, "channel", "c", "", "channel name")
+}
+
+func sendMassage(channel string, text string) {
+	token := viper.GetString("token")
+
+	api := slack.New(token)
+
+	_, _, err := api.PostMessage(channel, slack.MsgOptionText(text, false))
+	if err != nil {
+		fmt.Printf("%s\n", err)
+		return
+	}
+	fmt.Println("Message successfully sent to channel.")
 }

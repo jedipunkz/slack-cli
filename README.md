@@ -10,7 +10,6 @@ Golang 勉強用のレポジトリです。Slack にメッセージを送る CLI
 
 ```bash
 go get github.com/jedipunkz/slack-cli
-go build
 ```
 
 ## Usage
@@ -18,20 +17,32 @@ go build
 ### メッセージを送る
 
 ```bash
-slack-cli msg <チャンネル名> 'メッセージをここに書く'
+slack-cli msg -c <チャンネル名> 'メッセージをここに書く'
 ```
 
 ### コマンドの実行結果を Slack に送る
 
 ```bash
-slack-cli exec <チャンネル名> 'コマンド名'
-ex) slack-cli exec botchannel 'uname -a'
+slack-cli exec -c <チャンネル名> 'コマンド名'
+ex) slack-cli exec -c botchannel 'uname -a'
 ```
 
 ### ユーザ ID に従って情報を表示
 
 ```bash
 slack-cli user <USER_ID>
+```
+
+### ユーザ一覧を取得し表示
+
+```bash
+slack-cli get users
+```
+
+### チャンネル一覧を取得し表示
+
+```bash
+slack-cli get channels
 ```
 
 ### デーモンで起動し Slack の特定の文字列に反応する
